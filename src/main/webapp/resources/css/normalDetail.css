@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+@import "reset.css";
+
+.normal_detail_wrap {width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;}
+.normal_detail_content_wrap {width:670px; margin-bottom:30px; border-bottom:1px solid #d3d3d3;}
+.normal_img_content {width:670px; height:500px; margin:50px 0px 30px 0px;}
+.normal_img_content img {width:100%; height:100%;}
+.normal_detail_usrInfo ul{width:670px; height:70px; display:flex; flex-wrap:wrap; flex-direction:column; justify-content:center; margin-bottom:30px; border-bottom:1px solid #d3d3d3;}
+.normal_detail_usrInfo li:nth-child(1) {width:50px; height:50px; border-radius:50px; display:flex; justify-content:center; align-items:center;}
+.normal_detail_usrInfo li:nth-child(1) img {width:100%; height:100%;  border-radius: 50px;}
+.normal_detail_usrInfo li:nth-child(2) {width:470px; height:25px; display:flex; justify-content:flex-start; align-items:center;}
+.normal_detail_usrInfo li:nth-child(3) {width:470px; height:25px; display:flex; justify-content:flex-start; align-items:center;}
+.normal_detail_usrInfo li:nth-child(4) {width:100px; height:70px; display:flex; align-items:flex-end; flex-direction:column;}
+.normal_detail_usrInfo li:nth-child(4) div {width:45px; height:50px; display: flex; justify-content:flex-end; align-items:flex-end;}
+
+.normal_detail_content_wrap div:nth-child(3) p {font-size:20px;}
+.normal_detail_content_wrap div:nth-child(4) p {font-size:12px; margin-bottom:30px;}
+.normal_detail_content_wrap div:nth-child(5) p {width:670px; margin-bottom:50px; }
+
+.normal_detail_cmtWrap{width:670px;}
+#add{width:670px; height:110px; display:flex; justify-content:flex-start; align-items:flex-start;}
+.normal_detail_cmtWrap div:nth-child(1) p {margin-bottom:10px;}
+.comment {border:1px solid #d3d3d3; border-radius:5px;}
+.normal_detail_cmtWrap div:nth-child(2) {width:670px; display:flex;align-items:center; margin-bottom:20px; font-size: 12px;} 
+.normal_detail_cmtWrap div:nth-child(2) img {width:18px; height:18px; margin-right:10px;}
+#id {width:670px; height:100px; display:flex; align-items:flex-start;  border-bottom:1px solid #d3d3d3;}
+.comment {width:570px; height:70px; resize:none;}
+.strayAddBtn {width:80px; height:30px; border:0px; margin-left:5px; background:#f19149; color:#fff; border-radius:5px;}
+.normal_detail_cmtWrap div:nth-child(4) {width:670px; margin-bottom:50px;}
+
+.updateBtn {width:18px; height:18px;}
+.deleteBtn {width:18px; height:18px;}
+.updateBtn img {width:100%; height:100%;}
+.deleteBtn img {width:100%; height:100%;}
+  

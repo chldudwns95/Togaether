@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+	<select id="list" resultType="User">
+	SELECT USR_ID, USR_NAME, USR_TELL, USR_ADDR, USR_SORT, USR_NICKNAME, USR_EMAIL, USR_PASSWORD, USR_CAREER, USR_CIRTIFICATE, USR_KEY, USR_ADDR2, USR_COVER
+    HISTORY_ID, USR_POINT, USR_HISTORY
+	FROM USR JOIN HISTORY USING(USR_ID)
+	WHERE USR_ID =#{usrId}
+	</select>
+	
+	<update id="pwSearch">
+	UPDATE usr
+	SET USR_PASSWORD =#{key}
+	WHERE USR_EMAIL =#{usrEmail}
+	</update>
+	
+	<select id="emailSearch" resultType="String">
+	SELECT NVL(USR_EMAIL, 0) FROM usr
+	WHERE USR_NAME =#{usrName} AND USR_TELL =#{usrTell} AND USR_KEY = 'Y'
+	</select>	
+	
+	<update id="GetKey">
+		UPDATE usr
+		SET USR_KEY =#{usrKey}
+		WHERE USR_EMAIL =#{usrEmail}	
+	</update>
+	
+	<update id="alter_userKey" parameterType="User">
+		UPDATE usr
+		SET USR_KEY = 'Y' 
+		WHERE USR_EMAIL =#{usrEmail} and USR_KEY =#{usrKey}
+	</update>				
+		
+	<insert id="add">
+	INSERT INTO usr(USR_ID, USR_NAME, USR_TELL, USR_ADDR,USR_ADDR2, USR_SORT,
+					USR_NICKNAME, USR_EMAIL, USR_PASSWORD, USR_CAREER, USR_CIRTIFICATE, USR_KEY) 
+			
+			VALUES( USR_ID_SEQUENCE.NEXTVAL, #{usrName}, #{usrTell},#{usrAddr}, #{usrAddr2}, #{usrSort}, 
+					#{usrNickname},#{usrEmail},#{usrPassword},#{usrCareer},#{usrCirtificate}, #{usrKey})
+	</insert>
+	
+	<update id="update">
+		UPDATE usr
+		SET USR_TELL=#{usrTell}, USR_ADDR=#{usrAddr}, USR_ADDR2 =#{usrAddr2}, USR_CAREER=#{usrCareer}, USR_CIRTIFICATE=#{usrCirtificate} ,USR_PASSWORD=#{usrPassword}
+		<if test="usrCover != null">
+		,USR_COVER =#{usrCover}
+		</if>
+		WHERE USR_ID =#{usrId}		
+	</update>
+	<select id="item" resultType="User">	
+	SELECT * FROM USR
+	WHERE USR_ID =#{usrId}
+	
+   <!--  SELECT 
+    U.USR_ID,     U.USR_ADDR,     U.USR_ADDR2,    U.USR_NICKNAME,   
+	H.HISTORY_ID,     H.USR_POINT,     H.USR_HISTORY    
+    FROM USR U FULL OUTER JOIN HISTORY H ON U.USR_ID = H.USR_ID
+	WHERE U.USR_ID =#{usrId} -->
+	</select>
+	
+	<select id="myedit" resultType="User">
+		SELECT * FROM usr
+		WHERE USR_ID =#{usrId}
+	</select>
+	<select id="history" resultType="History">
+		SELECT H.HISTORY_ID, H.USR_ID,H.HISTORY_COVER, H.USR_POINT, H.USR_HISTORY, U.USR_NICKNAME,H.HISTORY_DATE, H.HISTORY_USR_ID
+		FROM HISTORY H, USR U
+		WHERE H.USR_ID = U.USR_ID AND H.HISTORY_USR_ID =#{usrId}	
+	</select>
+	
+	<select id="historyAvg" resultType="History">
+		SELECT SUM(USR_POINT) / COUNT(*) as "historyAvg"
+		FROM history
+		WHERE HISTORY_USR_ID =#{usrId}
+	</select>
+	
+	<select id="extra" resultType="extra">
+		SELECT * FROM extra
+		WHERE USR_ID =#{usrId}
+	</select>
+	
+	<select id="checkid" resultType="Integer">
+		SELECT COUNT(*) FROM usr
+		WHERE USR_EMAIL = #{usrEmail}
+	</select>
+	
+	<select id="serviceBook" resultType="Book">	<!--   제공자 조회	   -->
+		SELECT U1.USR_NICKNAME AS "tkdydwk", U2.USR_NICKNAME AS "wprhdwk",B.BOOK_ID, B.USR_ID, B.SERVICE_START_DATE, B.SERVICE_END_DATE, B.SERVICE_PRICE,B.SERVICE_ING  
+		FROM usr U1, usr U2, book B 
+		WHERE  U2.USR_ID = B.USR_ID2 AND B.USR_ID2 =#{usrId}
+		AND U1.USR_ID = B.USR_ID  
+	</select>
+	
+	<select id="book" resultType="Book"> <!-- 사용자 조회 -->
+		SELECT U1.USR_NICKNAME AS "tkdydwk", U2.USR_NICKNAME AS "wprhdwk",B.BOOK_ID, B.USR_ID,B.USR_ID2, B.SERVICE_START_DATE, B.SERVICE_END_DATE, B.SERVICE_PRICE,B.SERVICE_ING  
+		FROM usr U1, usr U2, book B 
+		WHERE  U1.USR_ID = B.USR_ID AND U2.USR_ID = B.USR_ID2 AND B.USR_ID =#{USR_ID}
+		AND U1.USR_ID = B.USR_ID 
+	</select>
+	
+	<select id="checknick" resultType="Integer">
+		SELECT COUNT(*) FROM usr
+		WHERE USR_NICKNAME =#{usrNickname}
+	</select>
+	
+	
+	<select id="login" resultType="User">
+		SELECT * FROM usr
+		WHERE USR_EMAIL=#{usrEmail} AND USR_PASSWORD =#{usrPassword}
+		AND USR_KEY = 'Y'		
+	</select>	
+	<select id="checkPw" resultType="int">
+		SELECT COUNT(*)
+		FROM USR
+		WHERE USR_EMAIL=#{usrEmail} AND USR_PASSWORD =#{usrPassword}
+	</select>
+	
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="normal">
+	<sql id="search">
+	SELECT BOARD_ID, USR_ID, BOARD_TITLE, BOARD_SORT, BOARD_DATE,BOARD_CONTENT, BOARD_ING, USR_NICKNAME, COVER
+	FROM BOARD_NORMAL JOIN USR USING(USR_ID)
+	<where>
+		<if test="search==1">
+			board_title LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+		</if>
+		<if test="search==2">
+			board_content LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+		</if>
+	</where>	
+	ORDER BY board_id
+	</sql>
+	
+	<select id="total">
+		SELECT COUNT(*) FROM
+		(<include refid="search"></include>)sub
+	</select>
+	
+
+	<select id="list" resultType="Normal">
+		SELECT * FROM 
+		(<include refid="search"></include>) sub 
+		ORDER BY board_id DESC
+		
+	</select>
+	
+	<insert id="add">
+		<if test= "cover == null">
+			INSERT INTO board_normal (board_id, board_sort, usr_id, board_title, board_date, board_content, board_ing)
+			VALUES (BOARD_ID_SEQUENCE.NEXTVAL, #{boardSort}, #{usrId}, #{boardTitle}, sysdate, #{boardContent}, #{boardIng})
+		</if>
+		<if test = "cover != null">
+			INSERT INTO board_normal (board_id, board_sort, usr_id, board_title, board_date, board_content, board_ing, cover)
+			VALUES (BOARD_ID_SEQUENCE.NEXTVAL, #{boardSort}, #{usrId}, #{boardTitle}, sysdate, #{boardContent}, #{boardIng}, #{cover})
+		</if>
+	</insert>
+	
+	<update id="update">
+		UPDATE board_normal 
+		SET	board_title=#{boardTitle},					
+			board_content=#{boardContent},
+			board_date=sysdate,			
+			board_ing=#{boardIng}
+			<if test="cover != null">
+			, cover=#{cover}
+			</if>
+			WHERE board_id=#{boardId}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM board_normal
+		WHERE board_id =#{boardId}	
+	</delete>
+	
+	<select id="item" resultType="Normal">
+		SELECT BOARD_ID, USR_ID, BOARD_TITLE, BOARD_SORT, BOARD_DATE,BOARD_CONTENT, BOARD_ING, USR_NICKNAME,USR_COVER ,COVER
+		FROM BOARD_NORMAL JOIN USR USING(USR_ID)
+		WHERE board_id =#{boardId}	
+	</select>
+</mapper>

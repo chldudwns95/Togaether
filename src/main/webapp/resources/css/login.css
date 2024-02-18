@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+@import "reset.css";
+
+#loginWrap {margin:0 auto; width:500px; height:1000px;}
+#loginWrap h1 {display:flex; justify-content:center; margin-top:10%;}
+
+#loginContent input{width:450px; height:50px; margin-bottom:20px; margin-left:20px; border-radius:5px; border:1px solid #b9b9b9;}
+#loginWrap form {height:220px;}
+#loginBtn {width:458px; height:50px; margin-left:20px; background-color:#f19149; font-size:20px; border-radius:5px; color:#fff; border:0;}
+
+
+#kakaoLoginBtn {width:458px; height:70px; margin-left:20px;}
+
+
+#loginContent2 {display:flex; justify-content:center; height:18px; margin-top:30px; margin-bottom:30px;}
+#loginContent2 a {padding-right:30px; padding-left:30px; color:#868686;}
+
+#signup {border-right:1px solid #d3d3d3;}
+

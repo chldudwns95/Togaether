@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="history">
+<select id="list" resultType="History">
+	SELECT H.*, U1.USR_NICKNAME as "u1Nick", U2.USR_NICKNAME as "u2Nick", U2.USR_COVER
+    FROM HISTORY H, USR U1, USR U2 
+    WHERE H.HISTORY_USR_ID = U2.USR_ID AND H.USR_ID = U1.USR_ID
+    ORDER BY HISTORY_ID DESC
+</select>
+
+<insert id="add">
+<if test="historyCover == null">
+	INSERT INTO history(HISTORY_ID, USR_ID, USR_POINT, USR_HISTORY, HISTORY_DATE, HISTORY_USR_ID) VALUES(HISTORY_ID_SEQUENCE.NEXTVAL, #{usrId}, #{usrPoint}, #{usrHistory},SYSDATE, #{historyUsrId})
+</if>
+<if test="historyCover != null">
+	INSERT INTO history(HISTORY_ID, USR_ID, USR_POINT, USR_HISTORY, HISTORY_DATE, HISTORY_COVER, HISTORY_USR_ID) VALUES(HISTORY_ID_SEQUENCE.NEXTVAL, #{usrId}, #{usrPoint}, #{usrHistory}, SYSDATE, #{historyCover}, #{historyUsrId})
+</if>
+</insert>
+
+<delete id="delete">
+	DELETE FROM history
+	WHERE HISTORY_ID =#{historyId}
+</delete>
+<select id="bookInfo" resultType="Book">
+	SELECT B.BOOK_ID, B.USR_ID2, U.USR_NICKNAME
+	FROM BOOK B, USR U
+	WHERE B.USR_ID2 = U.USR_ID AND B.BOOK_ID =#{bookId}	
+</select>
+
+<select id="indexHistory" resultType="History">
+	SELECT H.*, U1.USR_NICKNAME, U2.USR_NICKNAME
+    FROM HISTORY H, USR U1, USR U2 
+    WHERE H.HISTORY_USR_ID = U2.USR_ID AND H.USR_ID = U1.USR_ID
+</select>
+</mapper>

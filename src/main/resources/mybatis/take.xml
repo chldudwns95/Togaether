@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="take">
+	<sql id="search">
+		SELECT SERVICE_ID, USR_ID, SERVICE_START_DATE,SERVICE_SORT_ID, SERVICE_END_DATE,SERVICE_WALKING_TIME,SERVICE_HOUSE_SORT,SERVICE_HOUSE_SIZE,
+	    SERVICE_HOUSE_YARD,SERVICE_PICKUP,SERVICE_ETC,SERVICE_WALKING_PRICE,SERVICE_SITTING_PRICE,SERVICE_COVER, USR_ADDR, USR_ADDR2,USR_COVER, USR_NICKNAME
+		FROM SERVICE JOIN USR USING(USR_ID) 
+	<where>
+		<if test="search == 1">
+		USR_ADDR LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+		</if>
+		<!-- <if test="search == 1">SERVICE_ID=#{keyword}</if> -->
+	</where>
+		ORDER BY SERVICE_ID		
+	</sql>
+	
+	<select id="total" resultType="Integer">
+		SELECT COUNT(*) FROM (<include refid="search"></include>)
+	</select>		
+	
+	<select id="list" resultType="Take">
+		SELECT * FROM
+		(SELECT ROWNUM rnum, sub.*
+		FROM (<include refid="search"></include>) sub)
+		<![CDATA[
+		WHERE rnum >=((#{page}-1)*#{perPage}+1) and rnum <=(#{page}*#{perPage})
+		]]>
+		</select>
+	
+	<insert id="add">	
+	<if test="serviceCover == null">
+	INSERT INTO service  (SERVICE_ID,USR_ID, SERVICE_SORT_ID, SERVICE_START_DATE, SERVICE_END_DATE,
+						  SERVICE_WALKING_TIME,  SERVICE_HOUSE_SORT, SERVICE_HOUSE_SIZE, SERVICE_HOUSE_YARD,
+						  SERVICE_PICKUP, SERVICE_ETC, SERVICE_WALKING_PRICE, SERVICE_SITTING_PRICE )
+					 
+<!-- insert into usr values (service_id_sequence.nextval,'12', '12', '12', 1, 1, '12','12','12','12','12','12');  -->					 
+	VALUES(	SERVICE_ID_SEQUENCE.NEXTVAL, #{usrId}, #{serviceSortId}, #{serviceStartDate, jdbcType=VARCHAR}, #{serviceEndDate, jdbcType=VARCHAR}, 
+			 #{serviceWalkingTime, jdbcType=VARCHAR },  #{serviceHouseSort, jdbcType=VARCHAR }, #{serviceHouseSize, jdbcType=VARCHAR},#{serviceHouseYard, jdbcType=VARCHAR},
+			#{servicePickup}, #{serviceEtc, jdbcType=VARCHAR}, #{serviceWalkingPrice, jdbcType=VARCHAR}, #{serviceSittingPrice, jdbcType=VARCHAR})
+	</if>
+	<if test="serviceCover != null">				
+	INSERT INTO service  (SERVICE_ID,USR_ID, SERVICE_SORT_ID, SERVICE_START_DATE, SERVICE_END_DATE,
+						  SERVICE_WALKING_TIME,  SERVICE_HOUSE_SORT, SERVICE_HOUSE_SIZE, SERVICE_HOUSE_YARD,
+						  SERVICE_PICKUP, SERVICE_ETC, SERVICE_WALKING_PRICE, SERVICE_SITTING_PRICE,SERVICE_COVER )
+					 
+<!-- insert into usr values (service_id_sequence.nextval,'12', '12', '12', 1, 1, '12','12','12','12','12','12');  -->					 
+	VALUES(	SERVICE_ID_SEQUENCE.NEXTVAL, #{usrId}, #{serviceSortId}, #{serviceStartDate, jdbcType=VARCHAR}, #{serviceEndDate, jdbcType=VARCHAR}, 
+			 #{serviceWalkingTime, jdbcType=VARCHAR },  #{serviceHouseSort, jdbcType=VARCHAR }, #{serviceHouseSize, jdbcType=VARCHAR},#{serviceHouseYard, jdbcType=VARCHAR},
+			#{servicePickup}, #{serviceEtc, jdbcType=VARCHAR}, #{serviceWalkingPrice, jdbcType=VARCHAR}, #{serviceSittingPrice, jdbcType=VARCHAR}, #{serviceCover} )
+		<!-- <selectKey resultType="Integer" keyColumn = "SERVICE_ID" keyProperty="serviceId" order="AFTER">
+												데이터베이스의 컬럼			자바의컬럼
+			SELECT LAST_INSERT_ID()
+		</selectKey> -->
+	</if>
+	</insert>
+	
+	<update id="update">
+	UPDATE service	
+	SET SERVICE_START_DATE=#{serviceStartDate},
+		SERVICE_END_DATE=#{serviceEndDate},
+		SERVICE_WALKING_TIME=#{serviceWalkingTime},
+		SERVICE_HOUSE_SORT=#{serviceHouseSort},
+		SERVICE_HOUSE_SIZE=#{serviceHouseSize},
+		SERVICE_HOUSE_YARD=#{serviceHouseYard},
+		SERVICE_PICKUP=#{servicePickup},
+		SERVICE_ETC=#{serviceEtc},
+		SERVICE_WALKING_PRICE=#{serviceWalkingPrice},
+		SERVICE_SITTING_PRICE=#{serviceSittingPrice}
+		<if test="serviceCover != null">
+		,SERVICE_COVER =#{serviceCover}
+		</if>
+		WHERE SERVICE_ID =#{serviceId}		
+	</update>
+		
+	 <select id="item" resultType="Take">
+	 	SELECT 	S.SERVICE_ID, 	S.SERVICE_START_DATE,	S.SERVICE_SORT_ID, 	S.SERVICE_END_DATE,	S.SERVICE_WALKING_TIME,
+	    S.SERVICE_HOUSE_SORT,	S.SERVICE_HOUSE_SIZE,    S.SERVICE_HOUSE_YARD,    S.SERVICE_PICKUP,   	S.SERVICE_ETC,
+	    S.SERVICE_WALKING_PRICE,    S.SERVICE_SITTING_PRICE, S.SERVICE_COVER,
+	    U.USR_ID,     U.USR_ADDR,     U.USR_ADDR2,    U.USR_NICKNAME, U.USR_COVER
+	    
+	    FROM SERVICE S FULL OUTER JOIN USR U ON S.USR_ID = U.USR_ID 
+	    WHERE SERVICE_ID =#{serviceId}
+	</select>
+	
+	<select id="history" resultType="History">
+		<!-- SELECT H.*, U1.USR_NICKNAME as "u1Nick", U2.USR_NICKNAME as "u2Nick", U2.USR_COVER as "u2Cover"
+	    FROM HISTORY H, USR U1, USR U2 
+	    WHERE H.HISTORY_USR_ID = U2.USR_ID AND H.USR_ID = U1.USR_ID AND HISTORY_USR_ID =#{usrId} -->
+	
+		SELECT H.*, U.USR_NICKNAME, H.HISTORY_USR_ID, U.USR_COVER
+		FROM HISTORY H, USR U
+		WHERE U.USR_ID = H.USR_ID AND HISTORY_USR_ID =#{usrId} 
+	</select>
+	<select id="extra" resultType="extra">
+		SELECT * FROM extra
+		WHERE USR_ID =#{usrId}
+	</select>
+	<delete id="delete">
+		DELETE FROM service
+		WHERE SERVICE_ID =#{serviceId}
+	</delete>
+</mapper>
+

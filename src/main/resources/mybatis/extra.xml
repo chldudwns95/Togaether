@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="extra">
+<select id="list" resultType="Extra">
+	SELECT * FROM extra
+</select>
+
+<insert id="add">
+	INSERT INTO extra VALUES(EXTRA_ID_SEQUENCE.NEXTVAL, #{usrId}, #{extraContent}, #{extraPrice})
+</insert>
+
+<delete id="delete">
+	DELETE FROM extra
+	WHERE EXTRA_ID =#{extraId}
+</delete>
+	
+</mapper>
+

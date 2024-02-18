@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goods">
+	<sql id="search">
+	SELECT GOODS_ID, USR_ID, GOODS_NAME, GOODS_DATE, GOODS_CONTENT, USR_NICKNAME, COVER
+	FROM BOARD_GOODS JOIN USR USING(USR_ID)	
+	<where>	
+		<if test="search==1">
+			usr_id=#{usrId}
+		</if>
+		<if test="search==2">
+			goods_name LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+		</if>
+	</where>	
+	 ORDER BY goods_id
+	</sql>
+	
+	<select id="total">
+		SELECT COUNT(*) FROM
+		(<include refid="search"></include>)sub
+	</select>
+
+	<select id="list" resultType="Goods">
+		SELECT * FROM 
+		(<include refid="search"></include>)sub 
+		ORDER BY goods_id 
+	</select>
+	
+	<insert id="add">
+		<if test="cover == null"> <!-- cover가 null일 경우  -->
+		INSERT INTO board_goods (GOODS_ID,usr_id, goods_name, goods_date, goods_content) 
+		VALUES(GOODS_ID_SEQUENCE.NEXTVAL, #{usrId}, #{goodsName}, SYSDATE, #{goodsContent})
+		</if>
+		<if test="cover != null"><!-- cover가 null이 아닌 경우  -->
+		INSERT INTO board_goods (GOODS_ID,usr_id, goods_name, goods_date, goods_content, cover) 
+		VALUES(GOODS_ID_SEQUENCE.NEXTVAL, #{usrId}, #{goodsName}, SYSDATE, #{goodsContent}, #{cover})
+		</if>
+	</insert>
+	
+	<update id="update">
+		UPDATE board_goods
+		SET goods_name=#{goodsName}, goods_date=SYSDATE, goods_content=#{goodsContent} 
+		<if test="cover != null">
+			, cover=#{cover}
+		</if>
+		WHERE goods_id=#{goodsId}		
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM board_goods
+		WHERE goods_id=#{goodsId}
+	</delete>
+	
+	<select id="item" resultType="Goods">
+		SELECT GOODS_ID, USR_ID, GOODS_NAME, GOODS_DATE, GOODS_CONTENT,  COVER, USR_NICKNAME, USR_ADDR, USR_COVER
+		FROM  BOARD_GOODS JOIN USR USING(USR_ID)
+		WHERE goods_id=#{goodsId}
+	</select>
+	
+	
+</mapper>

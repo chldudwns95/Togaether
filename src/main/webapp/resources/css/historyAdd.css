@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@import"reset.css";
+body{font-size:1.25em;}
+input{width:300px; margin-top:30px;}
+.historyAddWrap{display:flex; width:100%; justify-content: center; align-items: center; flex-direction:column; padding:30px;}
+.historyForm{width:355px; margin-top:30px;}
+
+.historyForm div{margin-top:20px;}
+.historyAddButton{background-color:#f19149; border:0; border-radius: 5px; color:white; padding:5px;}
+.historyForm textarea{min-width:380; min-height:140;}
+.historySelect{width:380px;}

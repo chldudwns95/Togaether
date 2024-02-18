@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cmt">
+	
+	<select id="list" resultType="Cmt">
+		SELECT * FROM cmt WHERE board_id=#{boardId} ORDER BY cmt_id DESC
+	</select>
+	
+	<insert id="add">
+		INSERT INTO cmt (cmt_id, board_id, cmt_content, cmt_nickname )
+		VALUES (cmt_id_sequence.nextval, #{boardId}, #{cmtContent}, #{cmtNickname})
+		
+		<selectKey keyColumn="cmt_id" keyProperty="cmtId" resultType="Integer">
+			SELECT cmt_id_sequence.nextval FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<update id="update">
+		UPDATE cmt
+		SET cmt_content=#{cmtContent}
+		WHERE cmt_id=#{cmtId}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM cmt 
+		WHERE cmt_id=#{cmtId}		
+	</delete>
+	
+	<select id="item" resultType="Cmt">
+		SELECT * FROM cmt 
+		WHERE cmt_id=#{cmtId}
+	</select>
+	
+	
+</mapper>

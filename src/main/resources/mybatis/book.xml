@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+	<select id="list" resultType="Book">
+		SELECT 	S.SERVICE_ID, S.SERVICE_START_DATE,	S.SERVICE_SORT_ID, S.SERVICE_END_DATE,	S.SERVICE_WALKING_TIME,
+	    S.SERVICE_HOUSE_SORT, S.SERVICE_HOUSE_SIZE, S.SERVICE_HOUSE_YARD, S.SERVICE_PICKUP,	S.SERVICE_ETC,
+	    S.SERVICE_WALKING_PRICE, S.SERVICE_SITTING_PRICE, S.SERVICE_COVER,
+	    U.USR_ID, U.USR_NICKNAME, 
+	    B.BOOK_ID
+	    FROM SERVICE S FULL OUTER JOIN USR U ON S.USR_ID = U.USR_ID FULL OUTER JOIN BOOK B ON B.USR_ID = S.USR_ID
+	    
+	    WHERE S.SERVICE_ID =#{serviceId}	
+	    </select>
+	
+	<insert id="add">
+		INSERT INTO book 
+		VALUES(BOOK_ID_SEQUENCE.NEXTVAL, #{usrId}, #{usrId2}, #{serviceId}, #{serviceStartDate}, #{serviceEndDate}, #{servicePrice}, #{serviceIng} ) <!-- JOIN   -->
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM book
+		WHERE BOOK_ID =#{bookId}
+	</delete>
+	<update id="update">
+		UPDATE book
+		SET	SERVICE_ING =#{serviceIng}
+		WHERE BOOK_ID =#{bookId}
+	</update>
+	<select id="item" resultType="Take">
+		SELECT 	S.*, U.USR_NICKNAME , U.USR_ADDR FROM service s, USR U
+		WHERE SERVICE_ID = #{serviceId} AND S.USR_ID = U.USR_ID
+	</select>
+</mapper>
+
+	
+
